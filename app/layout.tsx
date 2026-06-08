@@ -10,8 +10,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
+  title: 'LearningTracker - Master AI/ML at Your Pace',
+  description: 'Track your AI and machine learning learning journey across 7 domains',
   generator: 'v0.app',
   icons: {
     icon: [
@@ -38,8 +38,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className="font-sans antialiased">
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} bg-slate-950`}>
+      <body className="font-sans antialiased bg-slate-950">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
