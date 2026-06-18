@@ -1,6 +1,5 @@
 'use client'
 
-import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -30,17 +29,23 @@ export default function AuthPage() {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
-    const supabase = createClient()
     setIsLoading(true)
     setError(null)
     setSuccess(null)
 
     try {
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const response = await fetch('/api/auth/signin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
       })
-      if (signInError) throw signInError
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Sign in failed')
+      }
+
       setSuccess('Signed in successfully!')
       setTimeout(() => router.push('/dashboard'), 1500)
     } catch (err: unknown) {
@@ -54,7 +59,6 @@ export default function AuthPage() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
-    const supabase = createClient()
     setIsLoading(true)
     setError(null)
     setSuccess(null)
@@ -72,16 +76,18 @@ export default function AuthPage() {
     }
 
     try {
-      const { error: signUpError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo:
-            process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ??
-            `${window.location.origin}/auth/callback`,
-        },
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
       })
-      if (signUpError) throw signUpError
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Sign up failed')
+      }
+
       setSuccess('Account created! Please check your email to confirm.')
       setEmail('')
       setPassword('')
