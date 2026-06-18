@@ -44,7 +44,9 @@ export default function AuthPage() {
       setSuccess('Signed in successfully!')
       setTimeout(() => router.push('/dashboard'), 1500)
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Sign in failed')
+      console.error('[v0] Sign in error:', err)
+      const errorMessage = err instanceof Error ? err.message : 'Sign in failed'
+      setError(errorMessage)
     } finally {
       setIsLoading(false)
     }
@@ -85,7 +87,9 @@ export default function AuthPage() {
       setPassword('')
       setConfirmPassword('')
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Sign up failed')
+      console.error('[v0] Sign up error:', err)
+      const errorMessage = err instanceof Error ? err.message : 'Sign up failed'
+      setError(errorMessage)
     } finally {
       setIsLoading(false)
     }
@@ -200,8 +204,11 @@ export default function AuthPage() {
                 </div>
 
                 {error && (
-                  <div className="p-3 rounded-lg bg-red-900/20 border border-red-800/50 text-red-300 text-sm">
-                    {error}
+                  <div className="p-3 rounded-lg bg-red-900/20 border border-red-800/50 text-red-300 text-sm space-y-1">
+                    <p className="font-semibold">{error}</p>
+                    {error.includes('Failed to fetch') && (
+                      <p className="text-xs">Connection issue. Verify Supabase credentials in .env.local. See README.md.</p>
+                    )}
                   </div>
                 )}
 
@@ -274,8 +281,11 @@ export default function AuthPage() {
                 </div>
 
                 {error && (
-                  <div className="p-3 rounded-lg bg-red-900/20 border border-red-800/50 text-red-300 text-sm">
-                    {error}
+                  <div className="p-3 rounded-lg bg-red-900/20 border border-red-800/50 text-red-300 text-sm space-y-1">
+                    <p className="font-semibold">{error}</p>
+                    {error.includes('Failed to fetch') && (
+                      <p className="text-xs">Connection issue. Verify Supabase credentials in .env.local. See README.md.</p>
+                    )}
                   </div>
                 )}
 

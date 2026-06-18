@@ -35,10 +35,10 @@ export default function GoalsPage() {
 
         DOMAINS.forEach((domain) => {
           const existingGoal = existingGoals.find(
-            (g: any) => g.domain === domain
+            (g: any) => g.domain === domain.name
           )
 
-          initialData[domain] = {
+          initialData[domain.name] = {
             title: existingGoal?.title || '',
             description: existingGoal?.description || '',
             target_hours: existingGoal?.target_hours || 100,
@@ -54,7 +54,7 @@ export default function GoalsPage() {
         // Still initialize empty form if fetch fails
         const initialData: GoalFormData = {}
         DOMAINS.forEach((domain) => {
-          initialData[domain] = {
+          initialData[domain.name] = {
             title: '',
             description: '',
             target_hours: 100,
@@ -89,7 +89,7 @@ export default function GoalsPage() {
       setSaving(true)
 
       // Validate that at least title and target_hours are filled for each goal
-      const validGoals = Object.entries(goalData)
+      const validGoals: GoalInput[] = Object.entries(goalData)
         .filter(
           ([, data]) =>
             data.title.trim() && data.target_hours > 0 && data.target_date
@@ -104,90 +104,60 @@ export default function GoalsPage() {
 
       if (validGoals.length === 0) {
         toast.error('Please fill in at least one goal with title, hours, and date')
-        setSaving(false)
         return
       }
 
       await saveGoals(validGoals)
-      toast.success(`Saved ${validGoals.length} goal(s) successfully!`)
+      toast.success('Goals saved successfully!')
     } catch (error) {
       console.error('[v0] Error saving goals:', error)
-      toast.error('Failed to save goals. Please try again.')
+      toast.error('Failed to save goals')
     } finally {
       setSaving(false)
     }
   }
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950">
-        <div className="text-center">
-          <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-slate-600 border-t-indigo-500"></div>
-          <p className="text-slate-300">Loading your goals...</p>
-        </div>
-      </div>
-    )
+    return <div className="flex items-center justify-center min-h-screen text-slate-400">Loading...</div>
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl">
-        {/* Header section */}
-        <div className="mb-12 text-center">
-          <h1 className="text-balance text-4xl font-bold tracking-tight text-slate-100 sm:text-5xl">
-            Set Your Learning Goals
-          </h1>
-          <p className="mt-4 text-lg italic text-slate-400">
-            {`"Every hour you log brings you closer."`}
-          </p>
-          <p className="mt-2 text-slate-500">
-            Define what you want to achieve in each AI/ML domain
-          </p>
+    <div className="min-h-screen bg-slate-950 py-8">
+      <div className="max-w-6xl mx-auto px-4 space-y-8">
+        {/* Header */}
+        <div className="space-y-2">
+          <h1 className="text-4xl font-bold text-slate-100">Set Your Learning Goals</h1>
+          <p className="text-slate-400">Every hour you log brings you closer.</p>
         </div>
 
-        {/* Goals grid */}
-        <div className="mb-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {/* Goals Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {DOMAINS.map((domain) => (
             <GoalCard
-              key={domain}
-              domain={domain}
-              title={goalData[domain]?.title || ''}
-              description={goalData[domain]?.description || ''}
-              targetHours={goalData[domain]?.target_hours || 100}
-              targetDate={goalData[domain]?.target_date || ''}
-              onTitleChange={(value) =>
-                handleFieldChange(domain, 'title', value)
-              }
-              onDescriptionChange={(value) =>
-                handleFieldChange(domain, 'description', value)
-              }
-              onTargetHoursChange={(value) =>
-                handleFieldChange(domain, 'target_hours', value)
-              }
-              onTargetDateChange={(value) =>
-                handleFieldChange(domain, 'target_date', value)
-              }
+              key={domain.name}
+              domain={domain.name}
+              title={goalData[domain.name]?.title || ''}
+              description={goalData[domain.name]?.description || ''}
+              targetHours={goalData[domain.name]?.target_hours || 100}
+              targetDate={goalData[domain.name]?.target_date || ''}
+              onTitleChange={(value) => handleFieldChange(domain.name, 'title', value)}
+              onDescriptionChange={(value) => handleFieldChange(domain.name, 'description', value)}
+              onTargetHoursChange={(value) => handleFieldChange(domain.name, 'target_hours', value)}
+              onTargetDateChange={(value) => handleFieldChange(domain.name, 'target_date', value)}
             />
           ))}
         </div>
 
-        {/* Save button */}
+        {/* Save Button */}
         <div className="flex justify-center">
           <Button
             onClick={handleSaveAll}
             disabled={saving}
-            size="lg"
-            className="bg-indigo-600 text-base font-semibold text-white hover:bg-indigo-700 disabled:opacity-50"
+            className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-semibold px-8 py-6 text-lg rounded-lg transition-all duration-200"
           >
-            {saving ? 'Saving Goals...' : 'Save All Goals'}
+            {saving ? 'Saving...' : 'Save All Goals'}
           </Button>
         </div>
-
-        {/* Info text */}
-        <p className="mt-8 text-center text-sm text-slate-500">
-          Fill in at least title, target hours, and target date for each goal you
-          want to track.
-        </p>
       </div>
     </div>
   )

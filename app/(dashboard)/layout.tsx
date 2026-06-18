@@ -1,3 +1,6 @@
+import { Sidebar } from '@/components/layout/Sidebar'
+import { MobileNav } from '@/components/layout/MobileNav'
+import { QuickLogModal } from '@/components/layout/QuickLogModal'
 import { Toaster } from 'sonner'
 
 export default function DashboardLayout({
@@ -6,8 +9,22 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   return (
-    <>
-      <main className="min-h-screen bg-slate-950">{children}</main>
+    <div className="flex bg-slate-950 min-h-screen">
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Main Content */}
+      <main className="flex-1 lg:ml-64 pb-20 lg:pb-0">
+        {children}
+      </main>
+
+      {/* Mobile Navigation */}
+      <MobileNav />
+
+      {/* Quick Log Modal */}
+      <QuickLogModal />
+
+      {/* Toaster */}
       <Toaster
         position="top-right"
         theme="dark"
@@ -19,6 +36,6 @@ export default function DashboardLayout({
           },
         }}
       />
-    </>
+    </div>
   )
 }
