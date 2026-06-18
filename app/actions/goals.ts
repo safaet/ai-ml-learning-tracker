@@ -93,7 +93,7 @@ export async function saveGoals(goals: GoalInput[]) {
 
     if (upsertError) throw upsertError
 
-    revalidateTag('goals')
+    revalidateTag('goals', 'max')
     return { success: true }
   } catch (error) {
     console.error('[v0] Save goals error:', error)

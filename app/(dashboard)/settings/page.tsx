@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { Suspense } from 'react'
@@ -24,7 +24,7 @@ function SettingsContent() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showAccountDeleteConfirm, setShowAccountDeleteConfirm] = useState(false)
 
-  useState(() => {
+  useEffect(() => {
     const fetchProfile = async () => {
       const supabase = createClient()
       const {

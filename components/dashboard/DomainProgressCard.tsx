@@ -1,5 +1,6 @@
 import { DOMAINS } from '@/lib/domains'
 import { Card } from '@/components/ui/card'
+import { useMemo } from 'react'
 
 interface DomainProgressCardProps {
   domain: string
@@ -8,12 +9,23 @@ interface DomainProgressCardProps {
 }
 
 export function DomainProgressCard({ domain, hoursLogged, targetHours }: DomainProgressCardProps) {
-  const domainConfig = DOMAINS.find((d) => d.name === domain)
+  const domainConfig = useMemo(
+    () => DOMAINS.find((d) => d.name === domain),
+    [domain]
+  )
+
+  // Memoize progress calculation
+  const progress = useMemo(() => {
+    return targetHours ? Math.min((hoursLogged / targetHours) * 100, 100) : 0
+  }, [hoursLogged, targetHours])
+
+  const isComplete = useMemo(() => {
+    return targetHours ? hoursLogged >= targetHours : false
+  }, [hoursLogged, targetHours])
+
   if (!domainConfig) return null
 
   const DomainIcon = domainConfig.icon
-  const progress = targetHours ? Math.min((hoursLogged / targetHours) * 100, 100) : 0
-  const isComplete = targetHours ? hoursLogged >= targetHours : false
 
   return (
     <Card className="bg-slate-800/50 border-slate-700 p-6 overflow-hidden relative group hover:border-slate-600 transition-all">
