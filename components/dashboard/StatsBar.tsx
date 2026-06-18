@@ -1,54 +1,59 @@
-'use client'
-
-import { DashboardStats } from '@/app/actions/dashboard'
+import { Clock, Target, BookOpen, Flame } from 'lucide-react'
 import { Card } from '@/components/ui/card'
-import { Flame, Zap, TrendingUp, Calendar } from 'lucide-react'
 
 interface StatsBarProps {
-  stats: DashboardStats
+  totalHours: number
+  todayHours: number
+  totalLogs: number
+  activeGoals: number
+  streak: number
 }
 
-export function StatsBar({ stats }: StatsBarProps) {
-  const statItems = [
+export function StatsBar({ totalHours, todayHours, totalLogs, activeGoals, streak }: StatsBarProps) {
+  const stats = [
     {
+      icon: Clock,
       label: 'Total Hours',
-      value: stats.totalHoursLogged.toFixed(1),
-      icon: Zap,
-      color: 'from-blue-500 to-cyan-500',
+      value: totalHours.toFixed(1),
+      color: 'text-blue-400',
     },
     {
-      label: 'Current Streak',
-      value: `${stats.currentStreak}d`,
+      icon: Clock,
+      label: 'Today',
+      value: todayHours.toFixed(1),
+      color: 'text-cyan-400',
+    },
+    {
+      icon: BookOpen,
+      label: 'Total Logs',
+      value: totalLogs.toString(),
+      color: 'text-emerald-400',
+    },
+    {
+      icon: Target,
+      label: 'Active Goals',
+      value: activeGoals.toString(),
+      color: 'text-amber-400',
+    },
+    {
       icon: Flame,
-      color: 'from-orange-500 to-red-500',
-    },
-    {
-      label: 'Longest Streak',
-      value: `${stats.longestStreak}d`,
-      icon: TrendingUp,
-      color: 'from-emerald-500 to-teal-500',
-    },
-    {
-      label: 'Days Active (Month)',
-      value: stats.daysActiveThisMonth,
-      icon: Calendar,
-      color: 'from-indigo-500 to-purple-500',
+      label: 'Streak',
+      value: streak.toString(),
+      color: 'text-orange-400',
     },
   ]
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {statItems.map((item, idx) => {
-        const Icon = item.icon
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      {stats.map((stat, idx) => {
+        const Icon = stat.icon
         return (
-          <Card key={idx} className="bg-slate-800/50 border-slate-700 p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <p className="text-slate-400 text-sm font-medium">{item.label}</p>
-                <p className="text-3xl font-bold text-slate-100">{item.value}</p>
-              </div>
-              <div className={`p-3 rounded-lg bg-gradient-to-br ${item.color}`}>
-                <Icon className="w-6 h-6 text-white" />
+          <Card key={idx} className="bg-slate-800/50 border-slate-700 p-4">
+            <div className="flex items-center gap-3">
+              <Icon className={`w-6 h-6 ${stat.color}`} />
+              <div>
+                <p className="text-slate-400 text-sm">{stat.label}</p>
+                <p className="text-2xl font-bold text-slate-100">{stat.value}</p>
               </div>
             </div>
           </Card>
